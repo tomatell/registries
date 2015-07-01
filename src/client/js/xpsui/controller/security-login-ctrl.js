@@ -8,7 +8,8 @@
 		'$location',
 		'xpsui:NotificationFactory', 
 		'xpsui:NavigationService' ,
-		function($scope, SecurityService, $rootScope, $location,notificationFactory, navigationService) {
+		'$localStorage',
+		function($scope, SecurityService, $rootScope, $location,notificationFactory, navigationService, $localStorage) {
 			// FIXME remove this in production
 			// $scope.user = 'johndoe';
 			// $scope.password = 'johndoe';
@@ -20,6 +21,14 @@
 			 */
 			$scope.login = function() {
 				SecurityService.getLogin($scope.user, $scope.password).success(function(user) {
+					
+					 $scope.$storage = $localStorage.$default({
+						 username: '',
+						 password: ''
+					 });
+					 $scope.$storage.username = $scope.user;
+					 $scope.$storage.password = $scope.password;
+					 console.log($localStorage);
 					if (user.systemCredentials.profiles.length>1){
 						$scope.profiles=user.systemCredentials.profiles;
 					}
@@ -48,9 +57,6 @@
 				if (!$scope.selectedProfile) return;
 				SecurityService.selectProfile($scope.selectedProfile.id).success(function(){
 					 SecurityService.getCurrentUser().success(function(data){
-						 //if($scope.checkboxModel == 'YES') {
-							 //$alert('Rememberme enabled.');
-						//};
 						$rootScope.security.currentUser=data;
 						if (!navigationService.back()) {
 							$location.path('/personal-page');
