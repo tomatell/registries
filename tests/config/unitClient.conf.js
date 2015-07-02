@@ -28,6 +28,7 @@ module.exports = function (config) {
 			'../build/client/lib/angular-ui-ace/ui-ace.js',
 			'../build/client/js/safeUrlEncoder.js',
 			'../build/client/lib/ngstorage/ngStorage.min.js',
+			'../build/client/lib/node-uuid/uuid.js',
 
 			// Mock
 			'../build/client/lib/angular-mocks/angular-mocks.js',

@@ -15,20 +15,45 @@
 			// $scope.password = 'johndoe';
 			$scope.user = '';
 			$scope.password = '';
-
+			$scope.$storage = $localStorage.$default({
+				rememberme: false,
+				loginName: '',
+				profile: '',
+				securityToken: ''
+			});
+			$scope.checkboxModel = {
+					value : false
+			};
+			$scope.$storage.rememberme = $localStorage.rememberme;
+			console.log($scope.$storage.rememberme);
+			var remembermeelement = document.getElementById('x-rememberme-chk');
+			if($scope.$storage.rememberme){
+				$scope.checkboxModel.value = true;
+				remembermeelement.setAttribute('checked','checked'); 
+			} else {
+				$scope.checkboxModel.value = false;
+				$localStorage.$reset();
+				remembermeelement.setAttribute('checked','unchecked');
+			}
+			//console.log(remembermeelement);
+			//console.log($scope.checkboxModel);
 			/**
 			 * Login button click
 			 */
 			$scope.login = function() {
 				SecurityService.getLogin($scope.user, $scope.password).success(function(user) {
-					
-					 $scope.$storage = $localStorage.$default({
-						 username: '',
-						 password: ''
-					 });
-					 $scope.$storage.username = $scope.user;
-					 $scope.$storage.password = $scope.password;
-					 console.log($localStorage);
+					console.log(user.systemCredentials.tokenDao);
+					if($scope.checkboxModel.value){
+						$scope.$storage.rememberme = true;
+						$scope.$storage.loginName = $scope.user;
+						$scope.$storage.profile = user.systemCredentials.profiles[0].id;
+						$scope.$storage.securityToken = $scope.password;
+					} else {
+						$localStorage.$reset();
+						$scope.$storage.rememberme = false;
+					}
+					//console.log($scope.checkboxModel);
+					console.log(SecurityService);
 					if (user.systemCredentials.profiles.length>1){
 						$scope.profiles=user.systemCredentials.profiles;
 					}
